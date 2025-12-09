@@ -1,0 +1,40 @@
+import @std, @io, @strings, @arrays
+
+temp stack [int]
+
+do main() {
+    using std
+    temp content, err = io.read_file("test.forth")
+    temp tokens = strings.split(strings.trim_right(content), " ")
+
+    for_each token in tokens {
+        if token == "+" {
+            temp a = arrays.pop(stack)
+            temp b = arrays.pop(stack)
+            arrays.append(stack, b + a)
+        } or token == "-" {
+            temp a = arrays.pop(stack)
+            temp b = arrays.pop(stack)
+            arrays.append(stack, b - a)
+        } or token == "*" {
+            temp a = arrays.pop(stack)
+            temp b = arrays.pop(stack)
+            arrays.append(stack, b * a)
+        } or token == "/" {
+            temp a = arrays.pop(stack)
+            temp b = arrays.pop(stack)
+            arrays.append(stack, b / a)
+        } or token == "." {
+            println(arrays.pop(stack))
+        } or token == "emit" {
+            println(char(arrays.pop(stack)))
+        } or token == "cr" {
+            println()
+        } or strings.is_numeric(token) {
+            temp num = int(char(token))-int('0')
+            arrays.append(stack, num)
+        } otherwise {
+            println("Unknown token: ${token}")
+        }
+    }
+}
